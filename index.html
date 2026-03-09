@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkinCraft v3 — Éditeur de Skin Minecraft</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="header">
+  <div class="logo">
+    <div class="logo-mark"><div></div><div></div><div></div><div></div></div>
+    SkinCraft
+    <span class="logo-version">v3.0</span>
+  </div>
+  <div class="header-center">
+    <button class="btn btn-ghost" id="undoBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg> Annuler</button>
+    <button class="btn btn-ghost" id="redoBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3L21 13"/></svg> Refaire</button>
+    <button class="btn btn-ghost" id="clearBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg> Vider zone</button>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-amber" id="btn3D"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Voir en 3D</button>
+    <button class="btn btn-lime" id="exportBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exporter PNG</button>
+  </div>
+</header>
+
+<!-- 3D OVERLAY -->
+<div id="view3d">
+  <div class="view3d-hint">🖱 Glisser pour tourner · Molette pour zoomer</div>
+  <button class="btn btn-ghost view3d-close" id="close3DBtn">✕ Fermer</button>
+  <div id="threejs-mount">
+    <div class="loading-3d"><div class="loader-ring"></div>Chargement 3D…</div>
+  </div>
+  <div class="view3d-bar">
+    <button class="anim-btn" data-anim="idle"><span class="anim-icon">🧍</span>Repos</button>
+    <button class="anim-btn" data-anim="walk"><span class="anim-icon">🚶</span>Marcher</button>
+    <button class="anim-btn" data-anim="run"><span class="anim-icon">🏃</span>Courir</button>
+    <button class="anim-btn" data-anim="jump"><span class="anim-icon">⬆️</span>Sauter</button>
+    <button class="anim-btn" data-anim="sneak"><span class="anim-icon">🥷</span>Sneak</button>
+    <button class="anim-btn" data-anim="swim"><span class="anim-icon">🏊</span>Nager</button>
+    <button class="anim-btn" data-anim="dance"><span class="anim-icon">💃</span>Danser</button>
+    <button class="anim-btn" data-anim="attack"><span class="anim-icon">⚔️</span>Attaque</button>
+    <button class="anim-btn" data-anim="mine"><span class="anim-icon">⛏️</span>Miner</button>
+    <button class="anim-btn" data-anim="shield"><span class="anim-icon">🛡️</span>Bouclier</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- SIDEBAR GAUCHE -->
+  <aside class="sidebar sidebar-left">
+
+    <div class="s-section">
+      <div class="s-label">Importer un skin</div>
+      <div class="import-zone" id="importZone">
+        <input type="file" id="fileInput" accept=".png">
+        <div class="import-zone-icon">📂</div>
+        <h3>Glisser ou cliquer</h3>
+        <p>PNG 64×64 ou 64×32</p>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Type de modèle</div>
+      <div class="skin-type">
+        <button class="stype-btn active" data-type="steve">Steve (4px)</button>
+        <button class="stype-btn" data-type="alex">Alex (3px)</button>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Partie à éditer</div>
+      <div class="parts-grid">
+        <button class="part-btn active" data-part="head"><span class="part-btn-icon">🗣️</span><span class="part-btn-name">Tête</span></button>
+        <button class="part-btn" data-part="body"><span class="part-btn-icon">🧥</span><span class="part-btn-name">Corps</span></button>
+        <button class="part-btn" data-part="arm_right"><span class="part-btn-icon">💪</span><span class="part-btn-name">Bras D.</span></button>
+        <button class="part-btn" data-part="arm_left"><span class="part-btn-icon">🤲</span><span class="part-btn-name">Bras G.</span></button>
+        <button class="part-btn" data-part="leg_right"><span class="part-btn-icon">🦵</span><span class="part-btn-name">Jambe D.</span></button>
+        <button class="part-btn" data-part="leg_left"><span class="part-btn-icon">🦿</span><span class="part-btn-name">Jambe G.</span></button>
+        <button class="part-btn" data-part="full" style="grid-column:1/-1"><span class="part-btn-icon">🗺️</span><span class="part-btn-name" style="color:var(--lime)">Skin entier 64×64</span></button>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Calque</div>
+      <div class="layer-toggle">
+        <button class="layer-btn active" data-layer="base">Base</button>
+        <button class="layer-btn" data-layer="overlay">Overlay</button>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Outils de dessin</div>
+      <div class="tools-grid">
+        <div class="tool-btn active" data-tool="pencil">✏️<span class="tip">Crayon (P)</span></div>
+        <div class="tool-btn" data-tool="eraser">🧹<span class="tip">Gomme (E)</span></div>
+        <div class="tool-btn" data-tool="fill">🪣<span class="tip">Remplir (F)</span></div>
+        <div class="tool-btn" data-tool="eyedropper">💧<span class="tip">Pipette (I)</span></div>
+        <div class="tool-btn" data-tool="line">📏<span class="tip">Ligne (L)</span></div>
+        <div class="tool-btn" data-tool="rect">⬜<span class="tip">Rectangle (R)</span></div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <div class="slider-row">Pinceau <span id="brushSizeVal">1</span>px</div>
+      <input type="range" id="brushSize" min="1" max="8" value="1">
+    </div>
+    <div class="s-section">
+      <div class="slider-row">Opacité <span id="opacityVal">100</span>%</div>
+      <input type="range" id="opacitySlider" min="1" max="100" value="100">
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Couleurs</div>
+      <div class="color-row">
+        <div class="color-slot"><span>Primaire</span><div class="color-swatch" id="swatchPrimary" style="background:#a8ff3e"><input type="color" id="inputPrimary" value="#a8ff3e"></div></div>
+        <button class="btn btn-ghost swap-btn" id="swapBtn">⇄</button>
+        <div class="color-slot"><span>Second.</span><div class="color-swatch" id="swatchSecondary" style="background:#1e232e"><input type="color" id="inputSecondary" value="#1e232e"></div></div>
+      </div>
+      <div class="palette-wrap" id="palette"></div>
+    </div>
+
+    <div class="s-section">
+      <label class="check-row"><input type="checkbox" id="showGrid" checked> Afficher la grille</label>
+    </div>
+    <div class="spacer"></div>
+  </aside>
+
+  <!-- CENTRE -->
+  <main id="center">
+    <div class="canvas-tabs">
+      <div class="ctab active" data-view="edit"><div class="ctab-dot"></div>Édition partie</div>
+      <div class="ctab" data-view="full"><div class="ctab-dot"></div>Vue 64×64 complète</div>
+    </div>
+    <div style="padding:6px 12px 0;background:var(--panel);border-bottom:1px solid var(--border);display:flex;gap:4px;flex-wrap:wrap;flex-shrink:0;align-items:center;">
+      <div class="s-label" style="margin:0;align-self:center;">Face :</div>
+      <div class="face-tabs" id="faceTabs"></div>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="editCanvas"></canvas>
+      <div class="zoom-cluster">
+        <button id="zoomIn">+</button>
+        <button id="zoomReset">⊙</button>
+        <button id="zoomOut">−</button>
+      </div>
+      <div class="coords-badge" id="coordsBadge"><span>64×64</span> · ×8 &nbsp;<span id="statusCoords" style="color:var(--muted)">X: — Y: —</span></div>
+    </div>
+  </main>
+
+  <!-- SIDEBAR DROITE -->
+  <aside class="sidebar sidebar-right">
+
+    <div class="s-section">
+      <div class="s-label">Prévisualisation</div>
+      <div class="preview-box"><canvas id="prevCanvas" width="160" height="200"></canvas></div>
+      <div class="preview-view-btns">
+        <button class="view-btn active" data-face="front">↑ Avant</button>
+        <button class="view-btn" data-face="back">↓ Arrière</button>
+        <button class="view-btn" data-face="right">→ Droite</button>
+        <button class="view-btn" data-face="left">← Gauche</button>
+      </div>
+    </div>
+
+    <!-- ÉDITION GLOBALE -->
+    <div class="s-section">
+      <div class="s-label">✦ Édition globale (zone active)</div>
+
+      <!-- Teinte -->
+      <div style="margin-bottom:8px">
+        <div class="slider-row" style="margin-bottom:4px">Teinte <span id="hueShiftVal">0°</span></div>
+        <input type="range" id="hueShiftSlider" min="-180" max="180" value="0" style="margin-bottom:4px">
+        <button class="btn btn-ghost" id="btnHueApply" style="width:100%;font-size:10px;padding:5px">Appliquer teinte</button>
+      </div>
+
+      <!-- Luminosité -->
+      <div style="margin-bottom:8px">
+        <div class="slider-row" style="margin-bottom:4px">Luminosité <span id="brightnessVal">1.0</span>×</div>
+        <input type="range" id="brightnessSlider" min="0.2" max="3.0" step="0.05" value="1.0" style="margin-bottom:4px">
+        <button class="btn btn-ghost" id="btnBrightnessApply" style="width:100%;font-size:10px;padding:5px">Appliquer luminosité</button>
+      </div>
+
+      <!-- Saturation -->
+      <div style="margin-bottom:8px">
+        <div class="slider-row" style="margin-bottom:4px">Saturation <span id="saturationVal">1.0</span>×</div>
+        <input type="range" id="saturationSlider" min="0" max="3.0" step="0.05" value="1.0" style="margin-bottom:4px">
+        <button class="btn btn-ghost" id="btnSaturationApply" style="width:100%;font-size:10px;padding:5px">Appliquer saturation</button>
+      </div>
+
+      <!-- Contraste -->
+      <div style="margin-bottom:8px">
+        <div class="slider-row" style="margin-bottom:4px">Contraste <span id="contrastVal">0</span></div>
+        <input type="range" id="contrastSlider" min="-100" max="100" value="0" style="margin-bottom:4px">
+        <button class="btn btn-ghost" id="btnContrastApply" style="width:100%;font-size:10px;padding:5px">Appliquer contraste</button>
+      </div>
+
+      <!-- Opérations rapides -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px">
+        <button class="btn btn-ghost" id="btnFlipH" style="font-size:10px;padding:5px">⇄ Miroir H</button>
+        <button class="btn btn-ghost" id="btnFlipV" style="font-size:10px;padding:5px">⇅ Miroir V</button>
+      </div>
+
+      <!-- Coloriser -->
+      <button class="btn btn-ghost" id="btnColorize" style="width:100%;font-size:10px;padding:5px;margin-bottom:4px">🎨 Coloriser (couleur primaire)</button>
+
+      <!-- Remplacer couleur -->
+      <div style="display:flex;gap:4px;align-items:center;margin-bottom:4px">
+        <div style="font-size:9px;color:var(--muted);flex:1;font-family:var(--font-mono)">Tolérance</div>
+        <input type="range" id="colorTolerance" min="0" max="80" value="15" style="flex:2">
+        <span id="colorToleranceVal" style="font-size:9px;color:var(--lime);font-family:var(--font-mono);width:18px;text-align:right">15</span>
+      </div>
+      <button class="btn btn-ghost" id="btnReplaceColor" style="width:100%;font-size:10px;padding:5px">🔁 Remplacer 2→1</button>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Historique</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-label">Raccourcis</div>
+      <div class="shortcuts-list">
+        <div class="shortcut-row"><span>Crayon/Gomme/Fill</span><kbd>P</kbd><kbd>E</kbd><kbd>F</kbd></div>
+        <div class="shortcut-row"><span>Pipette/Ligne/Rect</span><kbd>I</kbd><kbd>L</kbd><kbd>R</kbd></div>
+        <div class="shortcut-row"><span>Annuler / Refaire</span><kbd>Ctrl Z</kbd></div>
+        <div class="shortcut-row"><span>Zoom +/−</span><kbd>+</kbd><kbd>−</kbd></div>
+        <div class="shortcut-row"><span>Clic droit</span><span style="font-size:10px;color:var(--muted)">Couleur 2</span></div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </aside>
+</div>
+
+<footer id="statusbar">
+  <div class="status-pill"><div class="status-dot"></div>SkinCraft v3</div>
+  <span id="statusPart">Tête</span>
+  <span>·</span>
+  <span id="statusTool">Crayon</span>
+  <div class="status-sep"></div>
+  <span>PNG 64×64</span>
+  <span>·</span>
+  <span class="tag">Minecraft Java Edition</span>
+</footer>
+
+<div id="notif"><span id="notifText"></span></div>
+
+<script src="app.js"></script>
+<script>
+// Tolerance slider live update
+document.getElementById('colorTolerance').addEventListener('input',e=>{
+  document.getElementById('colorToleranceVal').textContent=e.target.value;
+});
+</script>
+</body>
+</html>
